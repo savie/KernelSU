@@ -444,7 +444,7 @@ static int ksu_umount_mnt(struct path *path, int flags)
 	return path_umount(path, flags);
 #else
 	// TODO: umount for non GKI kernel
-	return -ENOSYS
+	return -ENOSYS;
 #endif
 }
 
@@ -618,7 +618,7 @@ static int ksu_task_prctl(int option, unsigned long arg2, unsigned long arg3,
 	return -ENOSYS;
 }
 // kernel 4.4 and 4.9
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) || defined(CONFIG_IS_HW_HISI)
 static int ksu_key_permission(key_ref_t key_ref, const struct cred *cred,
 			      unsigned perm)
 {
@@ -651,7 +651,7 @@ static struct security_hook_list ksu_hooks[] = {
 	LSM_HOOK_INIT(task_prctl, ksu_task_prctl),
 	LSM_HOOK_INIT(inode_rename, ksu_inode_rename),
 	LSM_HOOK_INIT(task_fix_setuid, ksu_task_fix_setuid),
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) || defined(CONFIG_IS_HW_HISI)
 	LSM_HOOK_INIT(key_permission, ksu_key_permission)
 #endif
 };
